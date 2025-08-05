@@ -35,12 +35,22 @@ export const signup = async (req, res) => {
 export const login = async(req, res) => {
   const {email, password} =  req.body;
   try{
-    const user = await User.findOne({email})
-    const isMatch = await bcrypt.compare(password, user.password);
+    // const user = await User.findOne({email})
+    // const isMatch = await bcrypt.compare(password, user.password);
 
-    if(!user || !isMatch){
-      return res.status(400).json({message: "Invalid user or password"});
-    }
+    // if(!user || !isMatch){
+    //   return res.status(400).json({message: "Invalid user or password"});
+    // }
+
+    const user = await User.findOne({ email });
+if (!user) {
+  return res.status(400).json({ message: "Invalid user or password" });
+}
+
+const isMatch = await bcrypt.compare(password, user.password);
+if (!isMatch) {
+  return res.status(400).json({ message: "Invalid user or password" });
+}
     createTokenAndSaveCookie(user._id, res);
     res.status(200).json({message: "User logged in successfully", 
       user:{
@@ -58,7 +68,7 @@ export const login = async(req, res) => {
 export const logout = async(req, res) => {
   try{
     res.clearCookie('jwt');
-    res.status(200).json({message: "User loggedout successfully"});
+    res.status(200).json({message: "User logged out successfully"});
   }catch(error){
     console.log(error);
     res.status(500).json({message: "Server error"});
