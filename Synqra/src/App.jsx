@@ -1,20 +1,20 @@
 import React from 'react'
-import Left from './home/Left/left'
-import Right from './home/Right/right'
-import Logout from './home/Left1/Logout'
 import Signup from './components/Signup'
 import Login from './components/Login'
+import Logout from './home/LogSidebar/Logout'
+import List from './home/chatList/List'
+import ChatArea from './home/chatArea/ChatArea'
 
 function App() {
   return (
     <>
-    {/* <div className = "flex h-screen">
+    <div className = "flex h-screen">
       <Logout/>
-      <Left/>
-      <Right/>
-    </div> */}
+      <List />
+      <ChatArea/>
+    </div>
 
-    {/* <Signup /> */}
+    <Signup />
     <Login />
     </>
   )
