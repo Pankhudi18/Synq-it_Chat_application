@@ -1,12 +1,60 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useAuth } from "../context/AuthProvider";
 
 function Signup() {
+
+  const {authUser, setAuthUser} = useAuth();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const password = watch("password", "");
+  const ConfirmPassword = watch("confirmpassword","");
+
+  const validatePasswordMatch = (value) => {
+    return value === password || "Passwords don't match";
+  }
+
+  const onSubmit = async (data) => {
+    const userInfo = {
+      name: data.username,
+      email: data.email,
+      password: data.password,
+      confirmpassword: data.confirmpassword,
+    };
+
+    console.log(userInfo);
+
+    await axios.post("http://localhost:9002/user/signup", userInfo)
+      .then((response) => {
+          console.log(response.data);
+          if(response.data){
+            alert("Signup successful! You can now log in.");
+          }
+          localStorage.setItem("messenger", JSON.stringify(response.data));
+          setAuthUser(response.data);
+      })
+      .catch((error) => {
+        console.log(error)
+        if(error.response){
+          alert("Error : " + error.response.data.error);
+        }
+      })
+  }
+
+
   return (
     <>
       <div>
         <div className="flex h-screen items-center justify-center">
         <form
-          action=""
+          onSubmit={handleSubmit(onSubmit)}
           className="w-100 border border-white px-10 py-8 rounded-md space-y-4 flex flex-col items-center"
         >
           <h1 className="text-2xl items-center font-bold flex justify-center m-3">
@@ -41,18 +89,13 @@ function Signup() {
               type="text"
               required
               placeholder="Username"
-              pattern="[A-Za-z][A-Za-z0-9\-]*"
-              minlength="3"
-              maxlength="30"
-              title="Only letters, numbers or dash"
+              {...register("username",
+                {required: true}
+                )
+              } 
             />
-
-            {/* <p className="validator-hint">
-              Must be 3 to 30 characters
-              <br />
-              containing only letters, numbers or dash
-            </p> */}
           </label>
+          {errors.username && <span className="text-left w-full  text-red-600 text-sm">**This field is required**</span>}
 
           {/* Email */}
           <label className="input validator">
@@ -72,9 +115,13 @@ function Signup() {
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
               </g>
             </svg>
-            <input type="email" placeholder="mail@site.com" required />
+            <input type="email" placeholder="mail@site.com" 
+              {...register("email",
+                {required: true}
+                )
+              }  />
           </label>
-          <div className="validator-hint hidden">Enter valid email address</div>
+          {errors.email && <span className="text-left w-full  text-red-600 text-sm">**This field is required**</span>}
 
           {/* Password */}
           <label className="input validator">
@@ -98,18 +145,13 @@ function Signup() {
               type="password"
               required
               placeholder="Password"
-              minlength="8"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+              {...register("password",
+                {required: true}
+                )
+              } 
             />
           </label>
-          <p className="validator-hint hidden">
-            Must be more than 8 characters, including
-            <br />
-            At least one number <br />
-            At least one lowercase letter <br />
-            At least one uppercase letter
-          </p>
+          {errors.password && <span className="text-left w-full  text-red-600 text-sm">**This field is required**</span>}
 
           {/* Confirm Password */}
           <label className="input validator">
@@ -133,18 +175,13 @@ function Signup() {
               type="password"
               required
               placeholder="Confirm Password"
-              minlength="8"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-              title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+              {...register("confirmpassword",
+                {required: true, validate: validatePasswordMatch}
+                )
+              } 
             />
           </label>
-          <p className="validator-hint hidden">
-            Must be more than 8 characters, including
-            <br />
-            At least one number <br />
-            At least one lowercase letter <br />
-            At least one uppercase letter
-          </p>
+          {errors.confirmpassword && <span className="text-left w-full  text-red-600 text-sm">{errors.confirmPassword.message}</span>}
 
           <div className="text-center bg-blue-600 w-full max-w-sm py-2 rounded-lg cursor-pointer">
             <input type = "submit" value="Signup"></input>
