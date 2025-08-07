@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import userRoute from "./routes/user.route.js"
+import cookieParser from "cookie-parser";
 import cors from "cors";
 
 dotenv.config();
@@ -18,9 +19,11 @@ try {
 
 app.use(express.json());
 
+app.use(cookieParser());
+
 app.use(cors());
 
-app.use("/user", userRoute);
+app.use("/api/user", userRoute);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

@@ -76,3 +76,15 @@ export const logout = async(req, res) => {
     res.status(500).json({message: "Server error"});
   }
 }
+
+
+export const getUserProfile = async (req, res) => {
+  try{
+    const loggedInUser = req.user._id;
+    const filteredUsers = await User.find({_id: {$ne: loggedInUser}}).select("-password");
+    res.status(201).json({filteredUsers});
+  }catch(error){
+    console.log("Error in all users" + error);
+    res.status(500).json({message: "Server error"});
+  }
+}

@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react'
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthProvider';
+import { Link } from 'react-router-dom';
 
 function Login() {
 
@@ -21,7 +22,7 @@ function Login() {
 
     console.log(userInfo);
 
-    axios.post("http://localhost:9002/user/login", userInfo)
+    axios.post("/api/user/login", userInfo)
       .then((response) => {
           console.log(response.data);
           if(response.data){
@@ -119,8 +120,8 @@ function Login() {
             <input type = "submit" value="Login" ></input>
           </div>
 
-          <p className="text-sm">Don't have an account? <span className="text-blue-600 underline cursor-pointer">
-            SignUp</span></p>
+          <p className="text-sm">Don't have an account? <Link to = {"/signup"} className="text-blue-600 underline cursor-pointer">
+            SignUp</Link></p>
         </form>
       </div>
       </div>
